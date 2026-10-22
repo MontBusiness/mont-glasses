@@ -21,5 +21,5 @@ mont_glasses.exe
 
 - Jayme de Moraes Ramos
 - Rafael Carvalho Lucas Santos
-- Inacio Vinicius Sant’Ana dos Santos Maumonge
+- Inacio Vinicius Sant’Ana dos Santos Malmonge
 - Miguel Antunes dos Santos Oliveira
