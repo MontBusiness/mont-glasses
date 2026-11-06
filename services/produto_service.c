@@ -37,3 +37,16 @@ int buscar_produto(int id, Produto *p) {
     }
     return 0;
 }
+
+int baixar_estoque(int id, int quantidade) {
+    Produto p;
+
+    if (!buscar_produto(id, &p)) {
+        return 0;
+    }
+    if (p.estoque < quantidade) {
+        return 0;
+    }
+    p.estoque -= quantidade;
+    return repo_atualizar_produto(&p);
+}

@@ -4,6 +4,7 @@
 #include "menu_view.h"
 #include "../services/cliente_service.h"
 #include "../services/produto_service.h"
+#include "../services/venda_service.h"
 
 static void ler_texto(const char *rotulo, char *destino, int tamanho) {
     printf("%s", rotulo);
@@ -127,6 +128,59 @@ void tela_listar_produtos(void) {
     pausar();
 }
 
+void tela_registrar_venda(void) {
+    Venda v;
+    int resultado;
+
+    printf("\n--- REGISTRAR VENDA ---\n");
+    v.id_cliente = ler_inteiro("ID do cliente: ");
+    v.id_produto = ler_inteiro("ID do produto: ");
+    v.quantidade = ler_inteiro("Quantidade: ");
+
+    resultado = registrar_venda(&v);
+    if (resultado == 1) {
+        printf("\nVenda registrada com ID %d. Total: R$ %.2f\n", v.id, v.total);
+    } else if (resultado == -1) {
+        printf("\nErro: a quantidade precisa ser maior que zero.\n");
+    } else if (resultado == -2) {
+        printf("\nErro: cliente nao encontrado.\n");
+    } else if (resultado == -3) {
+        printf("\nErro: produto nao encontrado.\n");
+    } else if (resultado == -4) {
+        printf("\nErro: estoque insuficiente.\n");
+    } else {
+        printf("\nErro ao gravar a venda.\n");
+    }
+    pausar();
+}
+
+void tela_consultar_vendas(void) {
+    Venda lista[MAX_VENDAS];
+    int total = consultar_vendas(lista, MAX_VENDAS);
+
+    printf("\n--- VENDAS REGISTRADAS (%d) ---\n", total);
+    if (total == 0) {
+        printf("Nenhuma venda registrada.\n");
+    }
+    for (int i = 0; i < total; i++) {
+        Cliente c;
+        Produto p;
+        char nome_cliente[100] = "?";
+        char nome_produto[100] = "?";
+
+        if (buscar_cliente(lista[i].id_cliente, &c)) {
+            strcpy(nome_cliente, c.nome);
+        }
+        if (buscar_produto(lista[i].id_produto, &p)) {
+            strcpy(nome_produto, p.descricao);
+        }
+        printf("%d | %s | %s | qtd: %d | R$ %.2f\n",
+               lista[i].id, nome_cliente, nome_produto,
+               lista[i].quantidade, lista[i].total);
+    }
+    pausar();
+}
+
 void exibir_menu_principal(void) {
     int opcao;
 
@@ -140,6 +194,8 @@ void exibir_menu_principal(void) {
         printf("3 - Buscar cliente\n");
         printf("4 - Cadastrar produto\n");
         printf("5 - Listar produtos\n");
+        printf("6 - Registrar venda\n");
+        printf("7 - Consultar vendas\n");
         printf("0 - Sair\n");
         opcao = ler_inteiro("\nEscolha uma opcao: ");
 
@@ -149,6 +205,8 @@ void exibir_menu_principal(void) {
             case 3: tela_buscar_cliente(); break;
             case 4: tela_cadastrar_produto(); break;
             case 5: tela_listar_produtos(); break;
+            case 6: tela_registrar_venda(); break;
+            case 7: tela_consultar_vendas(); break;
             case 0: printf("\nAte logo!\n"); break;
             default:
                 printf("\nOpcao invalida.\n");

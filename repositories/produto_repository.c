@@ -45,3 +45,22 @@ int repo_listar_produtos(Produto *lista, int max) {
     fclose(f);
     return total;
 }
+
+int repo_atualizar_produto(Produto *p) {
+    FILE *f = fopen(ARQUIVO_PRODUTOS, "r+b");
+    Produto atual;
+
+    if (f == NULL) {
+        return 0;
+    }
+    while (fread(&atual, sizeof(Produto), 1, f) == 1) {
+        if (atual.id == p->id) {
+            fseek(f, -(long)sizeof(Produto), SEEK_CUR);
+            fwrite(p, sizeof(Produto), 1, f);
+            fclose(f);
+            return 1;
+        }
+    }
+    fclose(f);
+    return 0;
+}

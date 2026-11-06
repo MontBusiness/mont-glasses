@@ -6,5 +6,6 @@
 int repo_proximo_id_produto(void);
 int repo_salvar_produto(Produto *p);
 int repo_listar_produtos(Produto *lista, int max);
+int repo_atualizar_produto(Produto *p);
 
 #endif
